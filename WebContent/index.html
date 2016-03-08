@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset = UTF-8">
+<link rel="stylesheet" href="style.css" type="text/css" media="all">
+<script type="text/javascript" src="processingRequest.js"></script>
+<title>Information about students</title>
+</head>
+<body onload="init()" >
+
+	<p class="font-title" align = "center">This is  resourse for finding information about students. Enter the name or the number of group in a field below.</p>
+	<p class="font-title" align = "center">For example: Oleg or 321701 or Chernikov 321758</p>
+	<hr color = "gray">
+	<form name="autofillform" method ="post" action= "AutoCompleteServlet">
+	
+	  <table align = "center" border="0" cellpadding="5">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class = "font-input">Enter Name/Group:</td>
+        <td>
+    <input class = "input" type="text"
+        size="40"
+        id="complete-field"
+        onkeyup="doCompletion();">
+		</td>
+      </tr>
+      <tr>
+        <td id="auto-row" colspan="4">
+        <table id="complete-table" cellspacing = "0" align = "center"></table>
+    	</td>
+      </tr>
+    </tbody>
+  </table>  
+	</form>
+</body>
+</html>
