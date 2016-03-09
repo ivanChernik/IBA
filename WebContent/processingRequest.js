@@ -13,7 +13,6 @@ function init() {
 
 function doCompletion() {
 	var url = "autocomplete?action=complete&id=" + escape(completeField.value);
-	console.log(completeField.value);
 	req = initRequest();
 	req.open("POST", url, true);
 	req.onreadystatechange = callback;
@@ -78,7 +77,6 @@ function parseMessages(responseXML) {
 	if (responseXML == null) {
 		return false;
 	} else {
-		console.log(responseXML);
 
 		var students = responseXML.getElementsByTagName("students")[0];
 

@@ -48,7 +48,6 @@ public class ProcessingServlet extends HttpServlet {
 			if (!targetId.equals("")) {
 
 				Iterator it = studentList.iterator();
-				System.out.println(targetId);
 				while (it.hasNext()) {
 					StudentModel student = (StudentModel) it.next();
 					if ( // targetId matches group
@@ -95,7 +94,6 @@ public class ProcessingServlet extends HttpServlet {
 				response.setContentType("text/xml");
 				response.setHeader("Cache-Control", "no-cache");
 				response.getWriter().write("<students>" + sb.toString() + "</students>");
-				System.out.println(sb);
 			} else
 
 			{
