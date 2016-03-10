@@ -1,19 +1,24 @@
 package iba.processing.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.SAXException;
 
 import iba.model.StudentModel;
-import iba.reading.ReadData;
+import iba.reading.ResourceLoader;
+import iba.reading.SAXParserStudent;
 
 @WebServlet(asyncSupported = true, urlPatterns = { "/autocomplete" })
 public class ProcessingServlet extends HttpServlet {
@@ -22,10 +27,29 @@ public class ProcessingServlet extends HttpServlet {
 
 	public ProcessingServlet() {
 		super();
-		ReadData readList = new ReadData();
-		readList.readFile();
-		studentList = readList.getStudentList();
+	}
 
+	public void init() {
+		studentList = new ArrayList<StudentModel>();
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		SAXParser parser = null;
+		try {
+			parser = factory.newSAXParser();
+		} catch (ParserConfigurationException e1) {
+			e1.printStackTrace();
+		} catch (SAXException e1) {
+			e1.printStackTrace();
+		}
+		SAXParserStudent saxParserStudent = new SAXParserStudent();
+
+		try {
+			parser.parse(ResourceLoader.loadResource("input.xml"), saxParserStudent);
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		studentList = saxParserStudent.getStudentList();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -47,7 +71,7 @@ public class ProcessingServlet extends HttpServlet {
 			// check if user sent empty string
 			if (!targetId.equals("")) {
 
-				Iterator it = studentList.iterator();
+				Iterator<StudentModel> it = studentList.iterator();
 				while (it.hasNext()) {
 					StudentModel student = (StudentModel) it.next();
 					if ( // targetId matches group
