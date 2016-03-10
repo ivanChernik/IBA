@@ -37,16 +37,12 @@ function callback() {
 
 	if (req.readyState == 4) {
 		if (req.status == 200) {
-			var parser = new DOMParser();
-			var text = req.responseText;
-			var xmlDoc = parser.parseFromString(text, "text/xml");
-			parseMessages(xmlDoc);
+			parseMessages(req.responseText);
 		}
 	}
 }
 
 function appendStudent(firstName, lastName, partronymic, numberGroup) {
-
 	var row;
 	var cell;
 	var linkElement;
@@ -72,36 +68,18 @@ function appendStudent(firstName, lastName, partronymic, numberGroup) {
 	cell.appendChild(linkElement);
 }
 
-function parseMessages(responseXML) {
+function parseMessages(responseText) {
 
-	if (responseXML == null) {
+	if (responseText == null) {
 		return false;
 	} else {
-
-		var students = responseXML.getElementsByTagName("students")[0];
-
-		if (students.childNodes.length > 0) {
-			completeTable.setAttribute("bordercolor", "black");
-			completeTable.setAttribute("border", "1");
-
-			for (var loop = 0; loop < students.childNodes.length; loop++) {
-				var student = students.childNodes[loop];
-
-				var firstName = student.getElementsByTagName("firstName")[0];
-				var valueFirstName = firstName.firstChild.nodeValue;
-
-				var lastName = student.getElementsByTagName("lastName")[0];
-				var valueLastName = lastName.firstChild.nodeValue;
-
-				var partronymic = student.getElementsByTagName("partronymic")[0];
-				var valuePatronymic = partronymic.firstChild.nodeValue;
-
-				var group = student.getElementsByTagName("group")[0];
-				var valueGroup = group.firstChild.nodeValue;
-
-				appendStudent(valueFirstName, valueLastName, valuePatronymic,
-						valueGroup);
-			}
+		completeTable.setAttribute("bordercolor", "black");
+		completeTable.setAttribute("border", "1");
+		var obj = JSON.parse(responseText);
+		var students = obj.students;
+		for (var loop = 0; loop < students.length; loop++) {
+			appendStudent(students[loop].firstName, students[loop].lastName, students[loop].partronymic,
+					students[loop].group);
 		}
 	}
 }

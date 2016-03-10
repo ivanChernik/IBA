@@ -27,13 +27,13 @@ public class ProcessingServlet extends HttpServlet {
 		studentList = readList.getStudentList();
 
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		String action = request.getParameter("action");
 		String targetId = request.getParameter("id");
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sbJSON = new StringBuffer();
 		boolean namesAdded = false;
 		if (targetId != null) {
 			targetId = targetId.trim().toLowerCase();
@@ -67,8 +67,9 @@ public class ProcessingServlet extends HttpServlet {
 									.contains(targetId)
 							|| student.getSecondName().toLowerCase().concat(" ").concat(student.getNumberGroup())
 									.contains(targetId)
-							|| student.getSecondName().toLowerCase().concat(" ")
-									.concat(student.getPartronymic().toLowerCase()).contains(
+							|| student.getFirstName().toLowerCase().concat(" ")
+									.concat(student.getSecondName().toLowerCase()).concat(" ")
+									.concat(student.getNumberGroup()).contains(
 											targetId)
 							|| student.getFirstName().toLowerCase().concat(" ")
 									.concat(student.getSecondName().toLowerCase()).concat(" ")
@@ -76,12 +77,15 @@ public class ProcessingServlet extends HttpServlet {
 											.concat(student.getNumberGroup()))
 									.contains(targetId)) {
 
-						sb.append("<student>");
-						sb.append("<firstName>" + student.getFirstName() + "</firstName>");
-						sb.append("<lastName>" + student.getSecondName() + "</lastName>");
-						sb.append("<partronymic>" + student.getPartronymic() + "</partronymic>");
-						sb.append("<group>" + student.getNumberGroup() + "</group>");
-						sb.append("</student>");
+						if (sbJSON.length() > 0) {
+							sbJSON.append(",");
+						}
+						sbJSON.append("{");
+						sbJSON.append("\"firstName\": \"" + student.getFirstName() + "\",");
+						sbJSON.append("\"lastName\": \"" + student.getSecondName() + "\",");
+						sbJSON.append("\"partronymic\": \"" + student.getPartronymic() + "\",");
+						sbJSON.append("\"group\": \"" + student.getNumberGroup() + "\"");
+						sbJSON.append("}");
 						namesAdded = true;
 					}
 				}
@@ -91,9 +95,10 @@ public class ProcessingServlet extends HttpServlet {
 			if (namesAdded)
 
 			{
-				response.setContentType("text/xml");
+				response.setContentType("text/html");
 				response.setHeader("Cache-Control", "no-cache");
-				response.getWriter().write("<students>" + sb.toString() + "</students>");
+				response.getWriter().write("{ \"students\": [ " + sbJSON.toString() + "]}");
+
 			} else
 
 			{
